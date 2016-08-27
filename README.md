@@ -19,8 +19,7 @@ However, this isn't currently supported by F5:
 
 <br>
 ## Installation
-<br>
-## [azure_ad_app.ps1](azure_ad_app.ps1)
+### [azure_ad_app.ps1](azure_ad_app.ps1)
 
 To be able to make API calls automatically, the two HA members must be provided with Azure Active Directory credentials ([azure_ha.json](azure_ha.json)) using the Azure Role-Based Access Control (RBAC).
 
