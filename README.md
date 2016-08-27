@@ -1,4 +1,10 @@
 # <img align="center" src="azure.png" height="70">&nbsp;&nbsp;F5 High Availability in Microsoft Azure
+[![Releases](https://img.shields.io/github/release/ArtiomL/f5-azure-ha.svg)](https://github.com/ArtiomL/f5-azure-ha/releases)
+[![Commits](https://img.shields.io/github/commits-since/ArtiomL/f5-azure-ha/v12.1.3.svg?label=commits%20since)](https://github.com/ArtiomL/f5-azure-ha/commits/master)
+[![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)](https://github.com/ArtiomL/f5-azure-ha/graphs/code-frequency)
+[![Issues](https://img.shields.io/github/issues/ArtiomL/f5-azure-ha.svg)](https://github.com/ArtiomL/sublime-f5-irules/issues)
+![TMOS](https://img.shields.io/badge/tmos-12.1-ff0000.svg)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
 In a regular F5 Device Service Clustering working in High Availability mode, cluster members use Gratuitous ARP or MAC Masquerade during normal operation and when cluster failover occurs.
 
