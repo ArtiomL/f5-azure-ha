@@ -23,7 +23,7 @@ __version__ = '0.9.7'
 # PID file
 strPFile = ''
 
-# Log level to /var/log/ltm
+# Log level to /var/log/ltm (or stdout)
 intLogLevel = 0
 strLogMethod = 'log'
 strLogID = '[-v%s-160827-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
@@ -271,6 +271,7 @@ def main():
 	# If run interactively, stdout is used for log messages
 	if sys.stdout.isatty():
 		strLogMethod = 'stdout'
+		intLogLevel = 1
 	# Set log level
 	if objArgs.log > 0:
 		intLogLevel = objArgs.log
