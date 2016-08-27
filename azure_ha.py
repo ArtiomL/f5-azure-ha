@@ -2,7 +2,7 @@
 # F5 Networks - Azure HA
 # https://github.com/ArtiomL/f5networks
 # Artiom Lichtenstein
-# v0.9.6, 23/08/2016
+# v0.9.7, 27/08/2016
 
 from argparse import ArgumentParser
 import atexit
@@ -18,7 +18,7 @@ from time import time
 
 __author__ = 'Artiom Lichtenstein'
 __license__ = 'MIT'
-__version__ = '0.9.6'
+__version__ = '0.9.7'
 
 # PID file
 strPFile = ''
@@ -26,7 +26,7 @@ strPFile = ''
 # Log level to /var/log/ltm
 intLogLevel = 0
 strLogMethod = 'log'
-strLogID = '[-v%s-160823-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
+strLogID = '[-v%s-160827-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
 
 # Logger command
 strLogger = 'logger -p local0.'
@@ -252,7 +252,7 @@ def funFailover():
 def funArgParser():
 	objArgParser = ArgumentParser(
 		description = 'F5 High Availability in Microsoft Azure',
-		epilog = 'https://github.com/ArtiomL/f5networks/tree/master/azure/ha')
+		epilog = 'https://github.com/ArtiomL/f5-azure-ha')
 	objArgParser.add_argument('-a', help ='test Azure RM authentication and exit', action = 'store_true', dest = 'auth')
 	objArgParser.add_argument('-c', help ='check current HA state and exit', action = 'store_true', dest = 'cur')
 	objArgParser.add_argument('-f', help ='force failover', action = 'store_true', dest = 'fail')
