@@ -110,7 +110,7 @@ Alternatively, this is controlled by the global `intLogLevel` variable:
 # Log level to /var/log/ltm (or stdout)
 intLogLevel = 0
 ```
-If run interactively, **_stdout_** is used for log messages (`intLogLevel` is set to 1), otherwise `/var/log/ltm` will be used.
+If run interactively, **_stdout_** is used for log messages (`python intLogLevel = 0`), otherwise `/var/log/ltm` will be used.
 
 <br>
 ## --help
