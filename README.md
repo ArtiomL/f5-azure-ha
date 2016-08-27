@@ -107,10 +107,10 @@ This is the actual HA / failover logic.
 All logging is **disabled** by default. Please use the `-l {0,1,2,3}` argument to set the required verbosity.<br>
 Alternatively, this is controlled by the global `intLogLevel` variable:
 ```python
-# Log level
+# Log level to /var/log/ltm (or stdout)
 intLogLevel = 0
 ```
-If run interactively, **_stdout_** is used for log messages, otherwise `/var/log/ltm` will be used.
+If run interactively, **_stdout_** is used for log messages (`intLogLevel` is set to 1), otherwise `/var/log/ltm` will be used.
 
 <br>
 ## --help
