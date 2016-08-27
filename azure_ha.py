@@ -254,9 +254,10 @@ def funArgParser():
 		description = 'F5 High Availability in Microsoft Azure',
 		epilog = 'https://github.com/ArtiomL/f5-azure-ha')
 	objArgParser.add_argument('-a', help ='test Azure RM authentication and exit', action = 'store_true', dest = 'auth')
-	objArgParser.add_argument('-c', help ='check current HA state and exit', action = 'store_true', dest = 'cur')
+	objArgParser.add_argument('-c', help ='config file location', dest = 'cfile')
 	objArgParser.add_argument('-f', help ='force failover', action = 'store_true', dest = 'fail')
 	objArgParser.add_argument('-l', help ='set log level (default: 0)', choices = [0, 1, 2, 3], type = int, dest = 'log')
+	objArgParser.add_argument('-s', help ='check current HA state and exit', action = 'store_true', dest = 'state')
 	objArgParser.add_argument('-v', action ='version', version = '%(prog)s v' + __version__)
 	objArgParser.add_argument('IP', help = 'peer IP address (required in monitor mode)', nargs = '?')
 	objArgParser.add_argument('PORT', help = 'peer HTTPS port (default: 443)', type = int, nargs = '?', default = 443)
@@ -267,19 +268,27 @@ def main():
 	global strLogMethod, intLogLevel, strPFile
 	objArgParser = funArgParser()
 	objArgs = objArgParser.parse_args()
+	# If run interactively, stdout is used for log messages
 	if sys.stdout.isatty():
 		strLogMethod = 'stdout'
+	# Set log level
 	if objArgs.log > 0:
 		intLogLevel = objArgs.log
+	# Config file location
+	if objArgs.cfile:
+		objAREA.strCFile = objArgs.cfile
+	# Test Azure RM authentication and exit
 	if objArgs.auth:
 		sys.exit(funRunAuth())
 
-	if objArgs.cur or objArgs.fail:
+	if objArgs.state or objArgs.fail:
+		# Check current HA state
 		funRunAuth()
 		funCurState()
 		if not objArgs.fail:
 			sys.exit()
 
+		# Force failover
 		sys.exit(funFailover())
 
 	funLog(1, '=' * 62)
