@@ -5,7 +5,8 @@
 [![Issues](https://img.shields.io/github/issues/ArtiomL/f5-azure-ha.svg)](https://github.com/ArtiomL/sublime-f5-irules/issues)
 ![TMOS](https://img.shields.io/badge/tmos-12.1-ff0000.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
-<br><br>
+<br>
+## Description
 
 In a regular F5 Device Service Clustering working in High Availability mode, cluster members use Gratuitous ARP or MAC Masquerade during normal operation and when cluster failover occurs.
 
@@ -15,7 +16,9 @@ However, this isn't currently supported by F5:
 > The two BIG-IP VEs are synchronizing their configurations to one another; they are not communicating for the purpose of failover. The BIG-IP VE high availability feature does not work in Azure, and you cannot create an active-standby pair.
 
  ([Source](https://support.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/bigip-ve-setup-msft-azure-12-0-0/3.html))
- 
+
+<br>
+## Installation
 <br>
 ## [azure_ad_app.ps1](azure_ad_app.ps1)
 
