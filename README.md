@@ -98,7 +98,7 @@ class clsAREA(object):
 ```
 
 <br>
-## [azure_ha.py](azure_ha.py)
+### [azure_ha.py](azure_ha.py)
 
 This is the actual HA / failover logic.
 
@@ -111,7 +111,7 @@ intLogLevel = 0
 ```
 If run interactively, **_stdout_** is used for log messages, otherwise `/var/log/ltm` will be used.
 
-### --help
+## --help
 ```
 ./azure_ha.py --help
 usage: azure_ha.py [-h] [-a] [-c] [-f] [-l {0,1,2,3}] [-v] [IP] [PORT]
@@ -130,5 +130,5 @@ optional arguments:
   -l {0,1,2,3}  set log level (default: 0)
   -v            show program's version number and exit
 
-https://github.com/ArtiomL/f5networks/tree/master/azure/ha
+https://github.com/ArtiomL/f5-azure-ha
 ```
