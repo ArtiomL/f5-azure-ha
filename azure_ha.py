@@ -230,6 +230,26 @@ def funOpStatus(objHResp):
 	return strStatus
 
 
+def funUpdUDR():
+	# UDR mode failover (or route table update in LBAZ mode)
+	lstIPs = funGetIPs()
+	# lstIPs[0] = local IP, lstIPs[1] = peer IP
+	diHeaders = objAREA.funBear()
+	# Add Content-Type to HTTP headers
+	diHeaders['Content-Type'] = 'application/json'
+	for i in objAREA.lstUDRs:
+		# Construct UDR URL
+		strURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/routeTables/%s%s' % objAREA.funAbsURL(i)
+		funLog(1, 'Updating Route Table: %s' % i)
+		try:
+			# Get UDR JSON
+			strUDR = requests.get(strURL, headers = diHeaders).content
+			objHResp = requests.put(strURL, headers = diHeaders, data = strUDR.replace(lstIPs[1], lstIPs[0]))
+			funOpStatus(objHResp)
+		except Exception as e:
+			funLog(2, repr(e), 'err')
+
+
 def funFailover():
 	diHeaders = objAREA.funBear()
 	try:
@@ -265,31 +285,14 @@ def funFailover():
 		objHResp = requests.put(strOldNICURL, headers = diHeaders, data = json.dumps(diOldNIC))
 		funLog(1, 'Removing the old NIC from LBAZ BE Pool... ')
 		if funOpStatus(objHResp) == 'Succeeded':
+			if objAREA.lstUDRs:
+				return funUpdUDR()
+
 			return 0
 
 	except Exception as e:
 		funLog(2, repr(e), 'err')
 	return 1
-
-
-def funUpdUDR():
-	# UDR mode failover (or route table update in LBAZ mode)
-	lstIPs = funGetIPs()
-	# lstIPs[0] = local IP, lstIPs[1] = peer IP
-	diHeaders = objAREA.funBear()
-	# Add Content-Type to HTTP headers
-	diHeaders['Content-Type'] = 'application/json'
-	for i in objAREA.lstUDRs:
-		# Construct UDR URL
-		strURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/routeTables/%s%s' % objAREA.funAbsURL(i)
-		funLog(1, 'Updating Route Table: %s' % i)
-		try:
-			# Get UDR JSON
-			strUDR = requests.get(strURL, headers = diHeaders).content
-			objHResp = requests.put(strURL, headers = diHeaders, data = strUDR.replace(lstIPs[1], lstIPs[0]))
-			funOpStatus(objHResp)
-		except Exception as e:
-			funLog(2, repr(e), 'err')
 
 
 def funArgParser():
