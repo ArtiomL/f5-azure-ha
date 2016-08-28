@@ -114,25 +114,28 @@ If run interactively, **_stdout_** is used for log messages (`intLogLevel = 1`),
 
 <br>
 ## --help
-```
+```shell
 ./azure_ha.py --help
-usage: azure_ha.py [-h] [-a] [-c CFILE] [-f] [-l {0,1,2,3}] [-s] [-v]
+usage: azure_ha.py [-h] [-a] [-c CFILE] [-f] [-l {0,1,2,3}] [-r UDR [UDR ...]]
+                   [-s] [-u] [-v]
                    [IP] [PORT]
 
 F5 High Availability in Microsoft Azure
 
 positional arguments:
-  IP            peer IP address (required in monitor mode)
-  PORT          peer HTTPS port (default: 443)
+  IP                peer IP address (required in monitor mode)
+  PORT              peer HTTPS port (default: 443)
 
 optional arguments:
-  -h, --help    show this help message and exit
-  -a            test Azure RM authentication and exit
-  -c CFILE      config file location
-  -f            force failover
-  -l {0,1,2,3}  set log level (default: 0)
-  -s            check current HA state and exit
-  -v            show program's version number and exit
+  -h, --help        show this help message and exit
+  -a                test Azure RM authentication and exit
+  -c CFILE          config file location
+  -f                force failover
+  -l {0,1,2,3}      set log level (default: 0)
+  -r UDR [UDR ...]  list of route tables to update
+  -s                check current HA state and exit
+  -u                UDR mode failover (-r is required)
+  -v                show program's version number and exit
 
 https://github.com/ArtiomL/f5-azure-ha
 ```
