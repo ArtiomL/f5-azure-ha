@@ -251,14 +251,20 @@ def funFailover():
 
 
 def funUpdUDR():
+	diHeaders = objAREA.funBear()
+	# Add Content-Type to HTTP headers
+	diHeaders['Content-Type'] = 'application/json'
 	for i in objAREA.lstUDRs:
+		# Construct UDR URL
 		strURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/routeTables/%s%s' % objAREA.funAbsURL(i)
-		diHeaders = objAREA.funBear()
+		funLog(1, 'Updating Route Table: %s' % i
 		try:
 			# Get UDR JSON
-			objHResp = requests.get(strURL, headers = diHeaders)
-			print objHResp.content
-			type(objHResp.content)
+			strUDR = requests.get(strURL, headers = diHeaders).content
+			objHResp = requests.put(strURL, headers = diHeaders, data = strUDR.replace('old', 'new'))
+			funOpStatus(objHResp)
+		except Exception as e:
+			funLog(2, repr(e), 'err')
 
 
 def funArgParser():
