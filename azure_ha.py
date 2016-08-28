@@ -153,10 +153,31 @@ def funLocIP(strRemIP):
 	return objUDP.getsockname()[0]
 
 
-def funCurState(strLocIP = '127.0.0.1', strPeerIP = '127.0.0.1'):
-	# Get current ARM state for the local machine
+def funGetIPs():
+	# Get private IP addresses for F5 NICs
+	diHeaders = objAREA.funBear()
+	lstIPs = []
+	for i in objAREA.lstF5NICs:
+		try:
+			# Construct ipconfig URL
+			strURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/networkInterfaces/%s/ipConfigurations/ipconfig1%s' % objAREA.funAbsURL(i)
+			# Append private IP to the list
+			lstIPs.append(json.loads(requests.get(strURL, headers = diHeaders).content)['properties']['privateIPAddress'])
+		except Exception as e:
+			funLog(2, repr(e), 'err')
+			return ['::1', '::1']
+
+	if funLocIP(lstIPs[0]) == lstIPs[1]:
+		lstIPs.reverse()
+	# Return two strings, local IP first, then peer IP
+	funLog(1, 'Local IP: %s, Peer IP: %s' % (lstIPs[0], lstIPs[1]))
+	return lstIPs
+
+
+def funCurState(lstIPs):
+	# Get current ARM state for the local machine (lstIPs[0] = local IP, lstIPs[1] = peer IP)
 	global objAREA
-	funLog(2, 'Current local private IP: %s, Resource Group: %s' % (strLocIP, objAREA.strRGName))
+	funLog(2, 'Current local private IP: %s, Resource Group: %s' % (lstIPs[0], objAREA.strRGName))
 	# Construct loadBalancers URL
 	strLBURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/%s%s' % objAREA.funAbsURL('loadBalancers')
 	diHeaders = objAREA.funBear()
@@ -174,13 +195,14 @@ def funCurState(strLocIP = '127.0.0.1', strPeerIP = '127.0.0.1'):
 		# Extract private IP address
 		strARMIP = json.loads(objHResp.content)['properties']['privateIPAddress']
 		funLog(2, 'Current private IP in Azure RM: %s' % strARMIP)
-		if strARMIP == strLocIP:
+		if strARMIP == lstIPs[0]:
 			# This machine is already Active
 			funLog(1, 'Current state: Active')
 			return 'Active'
 
-		elif strARMIP == strPeerIP:
+		elif strARMIP == lstIPs[1]:
 			# The dead peer is listed as Active - failover required
+			funLog(1, 'Current state: Standby')
 			return 'Standby'
 
 	except Exception as e:
@@ -251,16 +273,10 @@ def funFailover():
 
 
 def funUpdUDR():
+	# UDR mode failover (or route table update in LBAZ mode)
+	lstIPs = funGetIPs()
+	# lstIPs[0] = local IP, lstIPs[1] = peer IP
 	diHeaders = objAREA.funBear()
-	lstIPs = []
-	# Get private IP addresses for F5 NICs
-	for i in objAREA.lstF5NICs:
-		try:
-			strURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/networkInterfaces/%s/ipConfigurations/ipconfig1%s' % objAREA.funAbsURL(i)
-			lstIPs.append(json.loads(requests.get(strURL, headers = diHeaders).content)['properties']['privateIPAddress'])
-		except Exception as e:
-			funLog(2, repr(e), 'err')
-
 	# Add Content-Type to HTTP headers
 	diHeaders['Content-Type'] = 'application/json'
 	for i in objAREA.lstUDRs:
@@ -270,7 +286,7 @@ def funUpdUDR():
 		try:
 			# Get UDR JSON
 			strUDR = requests.get(strURL, headers = diHeaders).content
-			objHResp = requests.put(strURL, headers = diHeaders, data = strUDR.replace(lstIPs[0], lstIPs[1]))
+			objHResp = requests.put(strURL, headers = diHeaders, data = strUDR.replace(lstIPs[1], lstIPs[0]))
 			funOpStatus(objHResp)
 		except Exception as e:
 			funLog(2, repr(e), 'err')
@@ -329,7 +345,7 @@ def main():
 	if objArgs.state or objArgs.fail:
 		# Check current HA state
 		funRunAuth()
-		funCurState()
+		funCurState(funGetIPs())
 		if not objArgs.fail:
 			sys.exit()
 
@@ -389,7 +405,7 @@ def main():
 	funLog(1, 'Peer down, ARM action required.', 'warning')
 	funRunAuth()
 
-	if funCurState(funLocIP(strRIP), strRIP) == 'Standby':
+	if funCurState([funLocIP(strRIP), strRIP]) == 'Standby':
 		funLog(1, 'We\'re Standby in ARM, Active peer down. Trying to failover...', 'warning')
 		funFailover()
 
