@@ -63,6 +63,7 @@ objAREA = clsAREA()
 class clsExCodes(object):
 	def __init__(self):
 		self.rip = 6
+		self.udr = 5
 		self.armAuth = 4
 
 objExCodes = clsExCodes()
@@ -309,13 +310,12 @@ def funArgParser():
 	objArgParser.add_argument('-v', action ='version', version = '%(prog)s v' + __version__)
 	objArgParser.add_argument('IP', help = 'peer IP address (required in monitor mode)', nargs = '?')
 	objArgParser.add_argument('PORT', help = 'peer HTTPS port (default: 443)', type = int, nargs = '?', default = 443)
-	return objArgParser
+	return objArgParser.parse_args()
 
 
 def main():
 	global strLogMethod, intLogLevel, strPFile
-	objArgParser = funArgParser()
-	objArgs = objArgParser.parse_args()
+	objArgs = funArgParser()
 
 	# If run interactively, stdout is used for log messages
 	if sys.stdout.isatty():
@@ -341,6 +341,10 @@ def main():
 
 	# UDR mode failover
 	if objArgs.umode:
+		if not objArgs.udr:
+			funLog(0, 'No route tables to update in UDR mode!', 'err')
+			sys.exit(objExCodes.udr)
+
 		funRunAuth()
 		sys.exit(funUpdUDR())
 
@@ -364,7 +368,6 @@ def main():
 	except (AttributeError, socket.error) as e:
 		funLog(0, 'No valid peer IP!', 'err')
 		funLog(2, repr(e), 'err')
-		objArgParser.print_help()
 		sys.exit(objExCodes.rip)
 
 	# Verify second positional argument is a valid TCP port, set to 443 if not
