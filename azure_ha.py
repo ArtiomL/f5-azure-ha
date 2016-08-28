@@ -252,6 +252,7 @@ def funFailover():
 
 def funUpdUDR():
 	diHeaders = objAREA.funBear()
+
 	# Add Content-Type to HTTP headers
 	diHeaders['Content-Type'] = 'application/json'
 	for i in objAREA.lstUDRs:
@@ -277,6 +278,7 @@ def funArgParser():
 	objArgParser.add_argument('-l', help ='set log level (default: 0)', choices = [0, 1, 2, 3], type = int, dest = 'log')
 	objArgParser.add_argument('-r', help ='list of route tables to update', nargs = '+', dest = 'udr')
 	objArgParser.add_argument('-s', help ='check current HA state and exit', action = 'store_true', dest = 'state')
+	objArgParser.add_argument('-u', help ='UDR mode failover (-r is required)', action = 'store_true', dest = 'umode')
 	objArgParser.add_argument('-v', action ='version', version = '%(prog)s v' + __version__)
 	objArgParser.add_argument('IP', help = 'peer IP address (required in monitor mode)', nargs = '?')
 	objArgParser.add_argument('PORT', help = 'peer HTTPS port (default: 443)', type = int, nargs = '?', default = 443)
@@ -287,26 +289,35 @@ def main():
 	global strLogMethod, intLogLevel, strPFile
 	objArgParser = funArgParser()
 	objArgs = objArgParser.parse_args()
+
 	# If run interactively, stdout is used for log messages
 	if sys.stdout.isatty():
 		strLogMethod = 'stdout'
 		intLogLevel = 1
+
 	# Set log level
 	if objArgs.log > 0:
 		intLogLevel = objArgs.log
 
-	funLog(1, '=' * 62)
-
 	# Config file location
 	if objArgs.cfile:
 		objAREA.strCFile = objArgs.cfile
+
 	# Test Azure RM authentication and exit
 	if objArgs.auth:
 		sys.exit(funRunAuth())
 
+
 	# Route tables to update
 	if objArgs.udr:
 		objAREA.lstUDRs = objArgs.udr
+
+	# UDR-only mode
+	if objArgs.umode:
+		funRunAuth()
+		sys.exit(funUpdUDR())
+
+
 	if objArgs.state or objArgs.fail:
 		# Check current HA state
 		funRunAuth()
@@ -317,6 +328,7 @@ def main():
 		# Force failover
 		sys.exit(funFailover())
 
+	# eMonitor mode
 	try:
 		# Remove IPv6/IPv4 compatibility prefix (LTM passes addresses in IPv6 format)
 		strRIP = objArgs.IP.strip(':f')
