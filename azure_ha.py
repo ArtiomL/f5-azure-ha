@@ -252,17 +252,25 @@ def funFailover():
 
 def funUpdUDR():
 	diHeaders = objAREA.funBear()
+	lstIPs = []
+	# Get private IP addresses for F5 NICs
+	for i in objAREA.lstF5NICs:
+		try:
+			strURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/networkInterfaces/%s/ipConfigurations/ipconfig1%s' % objAREA.funAbsURL(i)
+			lstIPs.append(json.loads(requests.get(strURL, headers = diHeaders).content)['properties']['privateIPAddress'])
+		except Exception as e:
+			funLog(2, repr(e), 'err')
 
 	# Add Content-Type to HTTP headers
 	diHeaders['Content-Type'] = 'application/json'
 	for i in objAREA.lstUDRs:
 		# Construct UDR URL
 		strURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/routeTables/%s%s' % objAREA.funAbsURL(i)
-		funLog(1, 'Updating Route Table: %s' % i
+		funLog(1, 'Updating Route Table: %s' % i)
 		try:
 			# Get UDR JSON
 			strUDR = requests.get(strURL, headers = diHeaders).content
-			objHResp = requests.put(strURL, headers = diHeaders, data = strUDR.replace('old', 'new'))
+			objHResp = requests.put(strURL, headers = diHeaders, data = strUDR.replace(lstIPs[0], lstIPs[1]))
 			funOpStatus(objHResp)
 		except Exception as e:
 			funLog(2, repr(e), 'err')
@@ -312,7 +320,7 @@ def main():
 	if objArgs.udr:
 		objAREA.lstUDRs = objArgs.udr
 
-	# UDR-only mode
+	# UDR mode failover
 	if objArgs.umode:
 		funRunAuth()
 		sys.exit(funUpdUDR())
