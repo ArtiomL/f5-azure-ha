@@ -36,10 +36,11 @@ class clsAREA(object):
 	def __init__(self):
 		self.strCFile = '/shared/tmp/scripts/azure/azure_ha.json'
 		self.strMgmtHost = 'https://management.azure.com/'
+		self.lstUDRs = []
 		self.strAPIVer = '?api-version=2016-03-30'
 
-	def funAbsURL(self):
-		return self.strMgmtHost, self.strSubID, self.strRGName, self.strAPIVer
+	def funAbsURL(self, strResource):
+		return self.strMgmtHost, self.strSubID, self.strRGName, strResource, self.strAPIVer
 
 	def funURI(self, strMidURI):
 		return self.strMgmtHost + strMidURI + self.strAPIVer
@@ -157,7 +158,7 @@ def funCurState(strLocIP = '127.0.0.1', strPeerIP = '127.0.0.1'):
 	global objAREA
 	funLog(2, 'Current local private IP: %s, Resource Group: %s' % (strLocIP, objAREA.strRGName))
 	# Construct loadBalancers URL
-	strLBURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/loadBalancers%s' % objAREA.funAbsURL()
+	strLBURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/%s%s' % objAREA.funAbsURL('loadBalancers')
 	diHeaders = objAREA.funBear()
 	try:
 		# Get LBAZ JSON
@@ -249,6 +250,17 @@ def funFailover():
 	return 1
 
 
+def funUpdUDR():
+	for i in objAREA.lstUDRs:
+		strURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/routeTables/%s%s' % objAREA.funAbsURL(i)
+		diHeaders = objAREA.funBear()
+		try:
+			# Get UDR JSON
+			objHResp = requests.get(strURL, headers = diHeaders)
+			print objHResp.content
+			type(objHResp.content)
+
+
 def funArgParser():
 	objArgParser = ArgumentParser(
 		description = 'F5 High Availability in Microsoft Azure',
@@ -286,6 +298,7 @@ def main():
 	if objArgs.auth:
 		sys.exit(funRunAuth())
 
+	# Route tables to update
 	if objArgs.udr:
 		objAREA.lstUDRs = objArgs.udr
 	if objArgs.state or objArgs.fail:
