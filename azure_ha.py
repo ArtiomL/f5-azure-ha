@@ -2,7 +2,7 @@
 # F5 Networks - Azure HA
 # https://github.com/ArtiomL/f5networks
 # Artiom Lichtenstein
-# v0.9.7, 27/08/2016
+# v0.9.8, 28/08/2016
 
 from argparse import ArgumentParser
 import atexit
@@ -18,7 +18,7 @@ from time import time
 
 __author__ = 'Artiom Lichtenstein'
 __license__ = 'MIT'
-__version__ = '0.9.7'
+__version__ = '0.9.8'
 
 # PID file
 strPFile = ''
@@ -26,7 +26,7 @@ strPFile = ''
 # Log level to /var/log/ltm (or stdout)
 intLogLevel = 0
 strLogMethod = 'log'
-strLogID = '[-v%s-160827-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
+strLogID = '[-v%s-160828-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
 
 # Logger command
 strLogger = 'logger -p local0.'
@@ -257,6 +257,7 @@ def funArgParser():
 	objArgParser.add_argument('-c', help ='config file location', dest = 'cfile')
 	objArgParser.add_argument('-f', help ='force failover', action = 'store_true', dest = 'fail')
 	objArgParser.add_argument('-l', help ='set log level (default: 0)', choices = [0, 1, 2, 3], type = int, dest = 'log')
+	objArgParser.add_argument('-r', help ='check current HA state and exit', nargs = '+', dest = 'udr')
 	objArgParser.add_argument('-s', help ='check current HA state and exit', action = 'store_true', dest = 'state')
 	objArgParser.add_argument('-v', action ='version', version = '%(prog)s v' + __version__)
 	objArgParser.add_argument('IP', help = 'peer IP address (required in monitor mode)', nargs = '?')
@@ -275,6 +276,9 @@ def main():
 	# Set log level
 	if objArgs.log > 0:
 		intLogLevel = objArgs.log
+
+	funLog(1, '=' * 62)
+
 	# Config file location
 	if objArgs.cfile:
 		objAREA.strCFile = objArgs.cfile
@@ -292,8 +296,6 @@ def main():
 		# Force failover
 		sys.exit(funFailover())
 
-	funLog(1, '=' * 62)
-
 	try:
 		# Remove IPv6/IPv4 compatibility prefix (LTM passes addresses in IPv6 format)
 		strRIP = objArgs.IP.strip(':f')
@@ -301,8 +303,8 @@ def main():
 		socket.inet_pton(socket.AF_INET, strRIP)
 	except (AttributeError, socket.error) as e:
 		funLog(0, 'No valid peer IP!', 'err')
-		objArgParser.print_help()
 		funLog(2, repr(e), 'err')
+		objArgParser.print_help()
 		sys.exit(objExCodes.rip)
 
 	# Verify second positional argument is a valid TCP port, set to 443 if not
