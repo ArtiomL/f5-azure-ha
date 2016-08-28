@@ -114,7 +114,7 @@ If run interactively, **_stdout_** is used for log messages (`intLogLevel = 1`),
 
 <br>
 ## --help
-```shell
+```
 ./azure_ha.py --help
 usage: azure_ha.py [-h] [-a] [-c CFILE] [-f] [-l {0,1,2,3}] [-r UDR [UDR ...]]
                    [-s] [-u] [-v]
