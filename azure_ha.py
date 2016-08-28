@@ -257,7 +257,7 @@ def funArgParser():
 	objArgParser.add_argument('-c', help ='config file location', dest = 'cfile')
 	objArgParser.add_argument('-f', help ='force failover', action = 'store_true', dest = 'fail')
 	objArgParser.add_argument('-l', help ='set log level (default: 0)', choices = [0, 1, 2, 3], type = int, dest = 'log')
-	objArgParser.add_argument('-r', help ='check current HA state and exit', nargs = '+', dest = 'udr')
+	objArgParser.add_argument('-r', help ='list of route tables to update', nargs = '+', dest = 'udr')
 	objArgParser.add_argument('-s', help ='check current HA state and exit', action = 'store_true', dest = 'state')
 	objArgParser.add_argument('-v', action ='version', version = '%(prog)s v' + __version__)
 	objArgParser.add_argument('IP', help = 'peer IP address (required in monitor mode)', nargs = '?')
@@ -286,6 +286,8 @@ def main():
 	if objArgs.auth:
 		sys.exit(funRunAuth())
 
+	if objArgs.udr:
+		objAREA.lstUDRs = objArgs.udr
 	if objArgs.state or objArgs.fail:
 		# Check current HA state
 		funRunAuth()
