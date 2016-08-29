@@ -17,7 +17,7 @@ However, this isn't currently supported by F5:
 
  ([Source](https://support.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/bigip-ve-setup-msft-azure-12-0-0/3.html))
 
-The code in this repository is the proposed solution for API-based failover for F5 BIG-IP High Availability in Microsoft Azure.
+The code in this repository is the proposed API-based failover solution for BIG-IP HA in Microsoft Azure.
 
 <br>
 ## Installation
