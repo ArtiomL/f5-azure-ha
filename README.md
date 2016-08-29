@@ -19,6 +19,12 @@ However, this isn't currently supported by F5:
 
 The code in this repository is the proposed API-based failover solution for BIG-IP HA in Microsoft Azure.
 
+Updating both the Azure Load Balancer (LBAZ) and UDR (Route Tables) is supported.
+
+The HA / failover logic is designed to run on BIG-IPs, which is why only standard TMOS Python libraries were used.
+
+The minimum supported version is __12.1__ (the first TMOS version to include the Python `requests` HTTP library
+
 <br>
 ## Installation
 ### [azure_ad_app.ps1](azure_ad_app.ps1)
