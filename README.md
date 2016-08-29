@@ -23,7 +23,7 @@ Updating both the Azure Load Balancer (LBAZ) and UDR (Route Tables) is supported
 
 The HA / failover logic is designed to run on BIG-IPs, which is why only standard Python libraries were used.
 
-The minimum supported version is **12.1** (the first TMOS version to include the Python `requests` HTTP library).
+The minimum supported TMOS version is **12.1** (the first version to include the Python `requests` HTTP library).
 
 <br>
 ## Installation
