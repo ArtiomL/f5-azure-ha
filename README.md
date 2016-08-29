@@ -21,9 +21,9 @@ The code in this repository is the proposed API-based failover solution for BIG-
 
 Updating both the Azure Load Balancer (LBAZ) and UDR (Route Tables) is supported.
 
-The HA / failover logic is designed to run on BIG-IPs, which is why only standard TMOS Python libraries were used.
+The HA / failover logic is designed to run on BIG-IPs, which is why only standard Python libraries were used.
 
-The minimum supported version is __12.1__ (the first TMOS version to include the Python `requests` HTTP library
+The minimum supported version is **12.1** (the first TMOS version to include the Python `requests` HTTP library).
 
 <br>
 ## Installation
