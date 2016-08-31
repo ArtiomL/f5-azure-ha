@@ -19,7 +19,7 @@ However, this isn't currently supported by F5:
 
 The code in this repository is the proposed API-based failover solution for BIG-IP HA in Microsoft Azure.
 
-Updating both the Azure Load Balancer (LBAZ) and UDR (Route Tables) is supported.
+Updating both the Azure Load Balancer (LBAZ) and Route Tables (UDR) is supported.
 
 The HA / failover logic is designed to run on BIG-IPs, which is why only standard Python libraries were used:
 ```python
