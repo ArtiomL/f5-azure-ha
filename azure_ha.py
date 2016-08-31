@@ -166,7 +166,8 @@ def funGetIPs():
 			lstIPs.append(json.loads(requests.get(strURL, headers = diHeaders).content)['properties']['privateIPAddress'])
 		except Exception as e:
 			funLog(2, repr(e), 'err')
-			return ['::1', '::1']
+	if len(lstIPs) != 2:
+		return ['::1', '::1']
 
 	if funLocIP(lstIPs[0]) == lstIPs[1]:
 		lstIPs.reverse()
@@ -238,6 +239,8 @@ def funUpdUDR():
 	diHeaders = objAREA.funBear()
 	# Add Content-Type to HTTP headers
 	diHeaders['Content-Type'] = 'application/json'
+	# Exit code
+	intExCode = 0
 	for i in objAREA.lstUDRs:
 		# Construct UDR URL
 		strURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/routeTables/%s%s' % objAREA.funAbsURL(i)
@@ -245,10 +248,18 @@ def funUpdUDR():
 		try:
 			# Get UDR JSON
 			strUDR = requests.get(strURL, headers = diHeaders).content
-			objHResp = requests.put(strURL, headers = diHeaders, data = strUDR.replace(lstIPs[1], lstIPs[0]))
-			funOpStatus(objHResp)
+			strNewUDR = strUDR.replace(lstIPs[1], lstIPs[0])
+			if strNewUDR == strUDR:
+				funLog(1, 'No update needed.', 'warning')
+				raise Exception('.replace - no matches')
+			else:
+				objHResp = requests.put(strURL, headers = diHeaders, data = strNewUDR)
+				if funOpStatus(objHResp) != 'Succeeded':
+					raise Exception('funOpStatus != Succeeded')
 		except Exception as e:
 			funLog(2, repr(e), 'err')
+			intExCode += 1
+	return intExCode
 
 
 def funFailover():
