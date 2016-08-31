@@ -2,10 +2,10 @@
 # F5 Networks - Azure HA
 # https://github.com/ArtiomL/f5networks
 # Artiom Lichtenstein
-# v0.9.8, 28/08/2016
+# v0.9.9, 01/09/2016
 
 from argparse import ArgumentParser
-import atexit
+from atexit import register
 from datetime import timedelta
 import json
 import os
@@ -14,11 +14,11 @@ from signal import SIGKILL
 import socket
 from subprocess import call
 import sys
-from time import time
+from time import time, asctime
 
 __author__ = 'Artiom Lichtenstein'
 __license__ = 'MIT'
-__version__ = '0.9.8'
+__version__ = '0.9.9'
 
 # PID file
 strPFile = ''
@@ -26,7 +26,7 @@ strPFile = ''
 # Log level to /var/log/ltm (or stdout)
 intLogLevel = 0
 strLogMethod = 'log'
-strLogID = '[-v%s-160828-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
+strLogID = '[-v%s-160901-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
 
 # Logger command
 strLogger = 'logger -p local0.'
@@ -72,7 +72,7 @@ objExCodes = clsExCodes()
 def funLog(intMesLevel, strMessage, strSeverity = 'info'):
 	if intLogLevel >= intMesLevel:
 		if strLogMethod == 'stdout':
-			print strMessage
+			print('%s %s' % (asctime(), strMessage))
 		else:
 			lstCmd = (strLogger + strSeverity).split(' ')
 			lstCmd.append(strLogID + strMessage)
@@ -418,7 +418,7 @@ def main():
 	sys.exit(1)
 
 
-@atexit.register
+@register
 def funExit():
 	try:
 		os.remove(strPFile)
