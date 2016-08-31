@@ -14,7 +14,7 @@ from signal import SIGKILL
 import socket
 from subprocess import call
 import sys
-from time import time, asctime
+from time import time, strftime
 
 __author__ = 'Artiom Lichtenstein'
 __license__ = 'MIT'
@@ -72,7 +72,7 @@ objExCodes = clsExCodes()
 def funLog(intMesLevel, strMessage, strSeverity = 'info'):
 	if intLogLevel >= intMesLevel:
 		if strLogMethod == 'stdout':
-			print('%s %s' % (asctime(), strMessage))
+			print('%s %s' % (strftime('%b %d %X'), strMessage))
 		else:
 			lstCmd = (strLogger + strSeverity).split(' ')
 			lstCmd.append(strLogID + strMessage)
