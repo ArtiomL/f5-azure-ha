@@ -353,7 +353,7 @@ def main():
 	# UDR mode failover
 	if objArgs.umode:
 		if not objArgs.udr:
-			funLog(0, 'No route tables to update in UDR mode!', 'err')
+			funLog(0, 'No route tables to update in UDR mode! (use -r)', 'err')
 			sys.exit(objExCodes.udr)
 
 		funRunAuth()
@@ -377,7 +377,7 @@ def main():
 		# Verify first positional argument is a valid (peer) IP address
 		socket.inet_pton(socket.AF_INET, strRIP)
 	except (AttributeError, socket.error) as e:
-		funLog(0, 'No valid peer IP!', 'err')
+		funLog(0, 'No valid peer IP! (use --help)', 'err')
 		funLog(2, repr(e), 'err')
 		sys.exit(objExCodes.rip)
 
