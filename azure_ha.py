@@ -2,19 +2,19 @@
 # F5 Networks - Azure HA
 # https://github.com/ArtiomL/f5networks
 # Artiom Lichtenstein
-# v0.9.9, 01/09/2016
+# v0.9.9, 04/09/2016
 
-from argparse import ArgumentParser
-from atexit import register
-from datetime import timedelta
+import argparse
+import atexit
+import datetime
 import json
 import os
 import requests
-from signal import SIGKILL
+import signal
 import socket
-from subprocess import call
+import subprocess
 import sys
-from time import time, strftime
+import time
 
 __author__ = 'Artiom Lichtenstein'
 __license__ = 'MIT'
@@ -26,7 +26,7 @@ strPFile = ''
 # Log level to /var/log/ltm (or stdout)
 intLogLevel = 0
 strLogMethod = 'log'
-strLogID = '[-v%s-160901-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
+strLogID = '[-v%s-160904-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
 
 # Logger command
 strLogger = 'logger -p local0.'
@@ -72,11 +72,11 @@ objExCodes = clsExCodes()
 def funLog(intMesLevel, strMessage, strSeverity = 'info'):
 	if intLogLevel >= intMesLevel:
 		if strLogMethod == 'stdout':
-			print('%s %s' % (strftime('%b %d %X'), strMessage))
+			print('%s %s' % (time.strftime('%b %d %X'), strMessage))
 		else:
 			lstCmd = (strLogger + strSeverity).split(' ')
 			lstCmd.append(strLogID + strMessage)
-			call(lstCmd)
+			subprocess.call(lstCmd)
 
 
 def funARMAuth():
@@ -97,11 +97,11 @@ def funARMAuth():
 		# Read and store F5 VMs' NICs
 		objAREA.lstF5NICs = [diCreds['nicF5A'], diCreds['nicF5B']]
 		# Current epoch time
-		intEpNow = int(time())
+		intEpNow = int(time.time())
 		# Check if Bearer token exists (in credentials file) and whether it can be reused (expiration with 1 minute time skew)
 		if (set(('bearer', 'expiresOn')) <= set(diCreds) and int(diCreds['expiresOn']) - 60 > intEpNow):
 			objAREA.strBearer = diCreds['bearer'].decode('base64')
-			funLog(2, 'Reusing existing Bearer, it expires in %s' % str(timedelta(seconds=int(diCreds['expiresOn']) - intEpNow)))
+			funLog(2, 'Reusing existing Bearer, it expires in %s' % str(datetime.timedelta(seconds=int(diCreds['expiresOn']) - intEpNow)))
 			return 0
 
 		# Read additional config parameters
@@ -308,7 +308,7 @@ def funFailover():
 
 
 def funArgParser():
-	objArgParser = ArgumentParser(
+	objArgParser = argparse.ArgumentParser(
 		description = 'F5 High Availability in Microsoft Azure',
 		epilog = 'https://github.com/ArtiomL/f5-azure-ha')
 	objArgParser.add_argument('-a', help ='test Azure RM authentication and exit', action = 'store_true', dest = 'auth')
@@ -397,7 +397,7 @@ def main():
 	# Kill the last instance of this monitor if hung
 	if os.path.isfile(strPFile):
 		try:
-			os.kill(int(file(strPFile, 'r').read()), SIGKILL)
+			os.kill(int(file(strPFile, 'r').read()), signal.SIGKILL)
 			funLog(1, 'Killed the last hung instance of this monitor.', 'warning')
 		except OSError:
 			pass
@@ -429,7 +429,7 @@ def main():
 	sys.exit(1)
 
 
-@register
+@atexit.register
 def funExit():
 	try:
 		os.remove(strPFile)
