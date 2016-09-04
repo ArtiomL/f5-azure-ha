@@ -34,9 +34,13 @@ strLogger = 'logger -p local0.'
 # Azure RM REST API
 class clsAREA(object):
 	def __init__(self):
+		# Config file
 		self.strCFile = '/shared/tmp/scripts/azure/azure_ha.json'
+		# Azure RM
 		self.strMgmtHost = 'https://management.azure.com/'
+		# List of route tables to update
 		self.lstUDRs = []
+		# API version
 		self.strAPIVer = '?api-version=2016-03-30'
 
 	def funAbsURL(self, strResource):
