@@ -69,7 +69,7 @@ tmsh create /cm device-group <device-group> devices add { <all-device-names-sepa
 tmsh run /cm config-sync to-group <device-group>
 ```
 
-
+<br>
 ### [azure_ad_app.ps1](azure_ad_app.ps1)
 
 To be able to make API calls automatically, the two HA members must be provided with Azure Active Directory credentials ([azure_ha.json](azure_ha.json)) using the Azure Role-Based Access Control (RBAC).
