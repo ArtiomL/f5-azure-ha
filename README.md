@@ -18,7 +18,9 @@ However, this isn't currently supported by F5:
  ([Source](https://support.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/bigip-ve-setup-msft-azure-12-0-0/3.html))
  
  If you'll try
- > :warning: 01071ac2:3: Device-group (/Common/dg_HA): network-failover property must be disabled in VE-1NIC.
+ ```
+ :warning: 01071ac2:3: Device-group (/Common/dg_HA): network-failover property must be disabled in VE-1NIC.
+```
 
 The code in this repository is the proposed API-based failover solution for BIG-IP HA in Microsoft Azure.
 
