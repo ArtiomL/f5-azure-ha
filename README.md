@@ -16,6 +16,9 @@ However, this isn't currently supported by F5:
 > The two BIG-IP VEs are synchronizing their configurations to one another; they are not communicating for the purpose of failover. The BIG-IP VE high availability feature does not work in Azure, and you cannot create an active-standby pair.
 
  ([Source](https://support.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/bigip-ve-setup-msft-azure-12-0-0/3.html))
+ 
+ If you'll try
+ > :warning: 01071ac2:3: Device-group (/Common/dg_HA): network-failover property must be disabled in VE-1NIC.
 
 The code in this repository is the proposed API-based failover solution for BIG-IP HA in Microsoft Azure.
 
