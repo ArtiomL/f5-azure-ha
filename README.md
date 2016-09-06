@@ -45,6 +45,7 @@ The minimum supported TMOS version is **12.1** (the first version to include the
 
 <br>
 ## Installation
+### [cfg_sync.sh](cfg_sync.sh)
 First, make sure you follow these steps to enable config sync ([Manual Chapter](https://support.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/bigip-ve-setup-msft-azure-12-0-0/3.html)):
 ```shell
 # Disable functionality that enforces single NIC setup
