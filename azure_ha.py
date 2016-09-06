@@ -47,7 +47,6 @@ class clsAREA(object):
 		# Add Content-Type to HTTP headers and modify User-Agent
 		self.objHS.headers.update({ 'Content-Type': 'application/json', 'User-Agent': 'f5-azure-ha v%s' % __version__ })
 
-
 	def funAbsURL(self, strResource):
 		return self.strMgmtHost, self.strSubID, self.strRGName, strResource, self.strAPIVer
 
