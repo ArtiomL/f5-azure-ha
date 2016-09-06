@@ -42,8 +42,9 @@ class clsAREA(object):
 		self.lstUDRs = []
 		# API version
 		self.strAPIVer = '?api-version=2016-03-30'
-		# API HTTPS Session
+		# API HTTPS session
 		self.objHS = requests.session()
+		# Add Content-Type to HTTP headers and modify User-Agent
 		self.objHS.headers.update({ 'Content-Type': 'application/json', 'User-Agent': 'f5-azure-ha v%s' % __version__ })
 
 
@@ -52,9 +53,6 @@ class clsAREA(object):
 
 	def funURI(self, strMidURI):
 		return self.strMgmtHost + strMidURI + self.strAPIVer
-
-	def funBear(self):
-		return { 'Authorization': 'Bearer %s' % self.strBearer }
 
 	def funSwapNICs(self):
 		# Use temp (short name) list (lst[0] = nicF5A, lst[1] = nicF5B)
@@ -164,14 +162,13 @@ def funLocIP(strRemIP):
 
 def funGetIPs():
 	# Get private IP addresses for F5 NICs
-	diHeaders = objAREA.funBear()
 	lstIPs = []
 	for i in objAREA.lstF5NICs:
 		try:
 			# Construct ipconfig URL
 			strURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/networkInterfaces/%s/ipConfigurations/ipconfig1%s' % objAREA.funAbsURL(i)
 			# Append private IP to the list
-			lstIPs.append(json.loads(requests.get(strURL, headers = diHeaders).content)['properties']['privateIPAddress'])
+			lstIPs.append(json.loads(objAREA.objHS.get(strURL).content)['properties']['privateIPAddress'])
 		except Exception as e:
 			funLog(2, repr(e), 'err')
 	if len(lstIPs) != 2:
@@ -190,10 +187,9 @@ def funCurState(lstIPs):
 	funLog(2, 'Current local private IP: %s, Resource Group: %s' % (lstIPs[0], objAREA.strRGName))
 	# Construct loadBalancers URL
 	strLBURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/%s%s' % objAREA.funAbsURL('loadBalancers')
-	diHeaders = objAREA.funBear()
 	try:
 		# Get LBAZ JSON
-		objHResp = requests.get(strLBURL, headers = diHeaders)
+		objHResp = objAREA.objHS.get(strLBURL)
 		# Store the backend pool JSON (for funFailover)
 		objAREA.diBEPool = json.loads(objHResp.content)['value'][0]['properties']['backendAddressPools']
 		# Extract backend IP ID ([1:] at the end removes the first "/" char)
@@ -201,7 +197,7 @@ def funCurState(lstIPs):
 		# Store the URI for NIC currently in the backend pool (for funFailover)
 		objAREA.strCurNICURI = strBEIPURI.split('/ipConfigurations')[0]
 		# Get backend IP JSON
-		objHResp = requests.get(objAREA.funURI(strBEIPURI), headers = diHeaders)
+		objHResp = objAREA.objHS.get(objAREA.funURI(strBEIPURI))
 		# Extract private IP address
 		strARMIP = json.loads(objHResp.content)['properties']['privateIPAddress']
 		funLog(2, 'Current private IP in Azure RM: %s' % strARMIP)
@@ -228,11 +224,10 @@ def funOpStatus(objHResp):
 	strOpURL = objHResp.headers['Azure-AsyncOperation']
 	funLog(2, 'ARM Async Operation, x-ms-request-id: %s' % objHResp.headers['x-ms-request-id'])
 	funLog(3, 'Op URL: %s' % strOpURL)
-	diHeaders = objAREA.funBear()
 	funLog(2, 'ARM Async Operation Status: %s' % strStatus)
 	while strStatus == 'InProgress':
 		try:
-			strStatus = json.loads(requests.get(strOpURL, headers = diHeaders).content)['status']
+			strStatus = json.loads(objAREA.objHS.get(strOpURL).content)['status']
 		except Exception as e:
 			funLog(2, repr(e), 'err')
 			break
@@ -244,10 +239,6 @@ def funUpdUDR():
 	# UDR mode failover (or route table update in LBAZ mode)
 	lstIPs = funGetIPs()
 	# lstIPs[0] = local IP, lstIPs[1] = peer IP
-	diHeaders = objAREA.funBear()
-	# Add Content-Type to HTTP headers
-	diHeaders['Content-Type'] = 'application/json'
-	# Exit code
 	intExCode = 0
 	for i in objAREA.lstUDRs:
 		# Construct UDR URL
@@ -255,13 +246,13 @@ def funUpdUDR():
 		funLog(1, 'Updating Route Table: %s' % i)
 		try:
 			# Get UDR JSON
-			strUDR = requests.get(strURL, headers = diHeaders).content
+			strUDR = objAREA.objHS.get(strURL).content
 			strNewUDR = strUDR.replace(lstIPs[1], lstIPs[0])
 			if strNewUDR == strUDR:
 				funLog(1, 'No update needed.', 'warning')
 				raise Exception('.replace - no matches')
 			else:
-				objHResp = requests.put(strURL, headers = diHeaders, data = strNewUDR)
+				objHResp = objAREA.objHS.put(strURL, data = strNewUDR)
 				if funOpStatus(objHResp) != 'Succeeded':
 					raise Exception('funOpStatus != Succeeded')
 		except Exception as e:
@@ -271,7 +262,6 @@ def funUpdUDR():
 
 
 def funFailover():
-	diHeaders = objAREA.funBear()
 	try:
 		strOldNICURL = objAREA.funURI(objAREA.strCurNICURI)
 	except AttributeError as e:
@@ -282,27 +272,25 @@ def funFailover():
 	strNewNICURL = objAREA.funSwapNICs()
 	try:
 		# Get the JSON of the NIC currently in the backend pool
-		objHResp = requests.get(strOldNICURL, headers = diHeaders)
+		objHResp = objAREA.objHS.get(strOldNICURL)
 		diOldNIC = json.loads(objHResp.content)
 		# Remove the LB backend pool from that JSON
 		diOldNIC['properties']['ipConfigurations'][0]['properties']['loadBalancerBackendAddressPools'] = []
 		# Get the JSON of the new NIC to be added to the backend pool
-		objHResp = requests.get(strNewNICURL, headers = diHeaders)
+		objHResp = objAREA.objHS.get(strNewNICURL)
 		diNewNIC = json.loads(objHResp.content)
 		# Remove the existing backend IP ID from the LB backend pool JSON (stored in funCurState)
 		objAREA.diBEPool[0]['properties']['backendIPConfigurations'] = []
 		# Add the LB backend pool to the new NIC JSON
 		diNewNIC['properties']['ipConfigurations'][0]['properties']['loadBalancerBackendAddressPools'] = objAREA.diBEPool
-		# Add Content-Type to HTTP headers
-		diHeaders['Content-Type'] = 'application/json'
 		# Update the new NIC (add it to the backend pool)
-		objHResp = requests.put(strNewNICURL, headers = diHeaders, data = json.dumps(diNewNIC))
+		objHResp = objAREA.objHS.put(strNewNICURL, data = json.dumps(diNewNIC))
 		funLog(1, 'Adding the new NIC to LBAZ BE Pool...')
 		if funOpStatus(objHResp) != 'Succeeded':
 			return 2
 
 		# Update the old NIC (remove it from the backend pool)
-		objHResp = requests.put(strOldNICURL, headers = diHeaders, data = json.dumps(diOldNIC))
+		objHResp = objAREA.objHS.put(strOldNICURL, data = json.dumps(diOldNIC))
 		funLog(1, 'Removing the old NIC from LBAZ BE Pool... ')
 		if funOpStatus(objHResp) == 'Succeeded':
 			if objAREA.lstUDRs:
