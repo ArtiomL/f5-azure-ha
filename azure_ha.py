@@ -2,7 +2,7 @@
 # F5 Networks - Azure HA
 # https://github.com/ArtiomL/f5networks
 # Artiom Lichtenstein
-# v0.9.9, 04/09/2016
+# v0.9.9, 06/09/2016
 
 import argparse
 import atexit
@@ -26,7 +26,7 @@ strPFile = ''
 # Log level to /var/log/ltm (or stdout)
 intLogLevel = 0
 strLogMethod = 'log'
-strLogID = '[-v%s-160904-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
+strLogID = '[-v%s-160906-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
 
 # Logger command
 strLogger = 'logger -p local0.'
@@ -42,6 +42,10 @@ class clsAREA(object):
 		self.lstUDRs = []
 		# API version
 		self.strAPIVer = '?api-version=2016-03-30'
+		# API HTTPS Session
+		self.objHS = requests.session()
+		self.objHS.headers.update({ 'Content-Type': 'application/json', 'User-Agent': 'f5-azure-ha v%s' % __version__ })
+
 
 	def funAbsURL(self, strResource):
 		return self.strMgmtHost, self.strSubID, self.strRGName, strResource, self.strAPIVer
@@ -104,7 +108,7 @@ def funARMAuth():
 		intEpNow = int(time.time())
 		# Check if Bearer token exists (in credentials file) and whether it can be reused (expiration with 1 minute time skew)
 		if (set(('bearer', 'expiresOn')) <= set(diCreds) and int(diCreds['expiresOn']) - 60 > intEpNow):
-			objAREA.strBearer = diCreds['bearer'].decode('base64')
+			objAREA.objHS.headers.update({ 'Authorization': 'Bearer %s' % diCreds['bearer'].decode('base64') })
 			funLog(2, 'Reusing existing Bearer, it expires in %s' % str(datetime.timedelta(seconds=int(diCreds['expiresOn']) - intEpNow)))
 			return 0
 
@@ -125,9 +129,9 @@ def funARMAuth():
 		diAuth = json.loads(objHResp.content)
 		if 'access_token' in diAuth.keys():
 			# Successfully received new token
-			objAREA.strBearer = diAuth['access_token']
+			objAREA.objHS.headers.update({ 'Authorization': 'Bearer %s' % diAuth['access_token'] })
 			# Write the new token and its expiration epoch into the credentials file
-			diCreds['bearer'] = objAREA.strBearer.encode('base64')
+			diCreds['bearer'] = diAuth['access_token'].encode('base64')
 			diCreds['expiresOn'] = diAuth['expires_on']
 			with open(objAREA.strCFile, 'w') as f:
 				f.write(json.dumps(diCreds, sort_keys=True, indent=4, separators=(',', ': ')))
@@ -146,7 +150,7 @@ def funRunAuth():
 
 	# ARM Auth OK
 	funLog(1, 'ARM Auth OK.')
-	funLog(3, 'ARM Bearer: %s' % objAREA.strBearer)
+	funLog(3, 'ARM Headers: %s' % str(objAREA.objHS.headers))
 	return 0
 
 
