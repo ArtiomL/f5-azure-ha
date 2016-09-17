@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# F5 Networks - Azure HA
-# https://github.com/ArtiomL/f5networks
+# f5-azure-ha - F5 High Availability in Microsoft Azure
+# https://github.com/ArtiomL/f5-azure-ha
 # Artiom Lichtenstein
 # v1.0.0, 17/09/2016
 
@@ -314,7 +314,7 @@ def funArgParser():
 		description = 'F5 High Availability in Microsoft Azure',
 		epilog = 'https://github.com/ArtiomL/f5-azure-ha')
 	objArgParser.add_argument('-a', help ='test Azure RM authentication and exit', action = 'store_true', dest = 'auth')
-	objArgParser.add_argument('-b', help ='Azure LB name', dest = 'lbaz')
+	objArgParser.add_argument('-b', help ='Azure LB name (first LB is used if omitted)', dest = 'lbaz')
 	objArgParser.add_argument('-c', help ='config file location', dest = 'cfile')
 	objArgParser.add_argument('-f', help ='force failover', action = 'store_true', dest = 'fail')
 	objArgParser.add_argument('-l', help ='set log level (default: 0)', choices = [0, 1, 2, 3], type = int, dest = 'log')
