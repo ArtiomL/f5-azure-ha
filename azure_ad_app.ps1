@@ -1,7 +1,7 @@
 # F5 Networks - Register Azure RM AD App for OAuth2 API Access
 # https://github.com/ArtiomL/f5networks
 # Artiom Lichtenstein
-# v1.2, 21/08/2016
+# v1.3, 17/09/2016
 
 # Login to Azure RM
 Login-AzureRmAccount
@@ -45,6 +45,11 @@ $nicF5B = ((Get-AzureRmVM -ResourceGroupName $rgName -Name ((Get-AzureRmAvailabi
 
 # Encode the password
 $adaPass = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($adaPass))
+
+# Add "f5-azure-ha" tag to the resource group
+$rgTags = (Get-AzureRmResourceGroup -Name $rgName).Tags
+$rgTags += @{ Name = "f5-azure-ha"; Value="provisioned" }
+Set-AzureRmResourceGroup -Name $rgName -Tag $rgTags
 
 # JSON values
 @{ "subID" = $subsID; "tenantID" = $tenantID; "appID" = $appID; "pass" = $adaPass; "rgName" = $rgName; "nicF5A" = $nicF5A; "nicF5B" = $nicF5B } | ConvertTo-Json
