@@ -196,7 +196,7 @@ def funCurState(lstIPs):
 			# JSON is specific (not an array) since LBAZ name was given
 			objAREA.diBEPool = json.loads(objHResp.content)['properties']['backendAddressPools']
 		else:
-			# JSON is an array of load balancers (LBAZ name was not given) - use the first one
+			# JSON is an array of all load balancers (LBAZ name was not given) - use the first one
 			objAREA.diBEPool = json.loads(objHResp.content)['value'][0]['properties']['backendAddressPools']
 		# Extract backend IP ID ([1:] at the end removes the first "/" char)
 		strBEIPURI = objAREA.diBEPool[0]['properties']['backendIPConfigurations'][0]['id'][1:]
