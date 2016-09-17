@@ -1,5 +1,5 @@
-# F5 Networks - Register Azure RM AD App for OAuth2 API Access
-# https://github.com/ArtiomL/f5networks
+# f5-azure-ha - Register Azure RM AD App for OAuth2 API Access
+# https://github.com/ArtiomL/f5-azure-ha
 # Artiom Lichtenstein
 # v1.3, 17/09/2016
 
