@@ -2,7 +2,7 @@
 # F5 Networks - Azure HA
 # https://github.com/ArtiomL/f5networks
 # Artiom Lichtenstein
-# v0.9.9, 06/09/2016
+# v1.0.0, 17/09/2016
 
 import argparse
 import atexit
@@ -18,7 +18,7 @@ import time
 
 __author__ = 'Artiom Lichtenstein'
 __license__ = 'MIT'
-__version__ = '0.9.9'
+__version__ = '1.0.0'
 
 # PID file
 strPFile = ''
@@ -26,7 +26,7 @@ strPFile = ''
 # Log level to /var/log/ltm (or stdout)
 intLogLevel = 0
 strLogMethod = 'log'
-strLogID = '[-v%s-160906-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
+strLogID = '[-v%s-160917-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
 
 # Logger command
 strLogger = 'logger -p local0.'
@@ -38,6 +38,8 @@ class clsAREA(object):
 		self.strCFile = '/shared/tmp/scripts/azure/azure_ha.json'
 		# Azure RM
 		self.strMgmtHost = 'https://management.azure.com/'
+		# LBAZ name
+		self.strLBName = ''
 		# List of route tables to update
 		self.lstUDRs = []
 		# API version
@@ -185,7 +187,7 @@ def funCurState(lstIPs):
 	global objAREA
 	funLog(2, 'Current local private IP: %s, Resource Group: %s' % (lstIPs[0], objAREA.strRGName))
 	# Construct loadBalancers URL
-	strLBURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/%s%s' % objAREA.funAbsURL('loadBalancers')
+	strLBURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/%s%s' % objAREA.funAbsURL('loadBalancers' + objAREA.strLBName)
 	try:
 		# Get LBAZ JSON
 		objHResp = objAREA.objHS.get(strLBURL)
@@ -307,6 +309,7 @@ def funArgParser():
 		description = 'F5 High Availability in Microsoft Azure',
 		epilog = 'https://github.com/ArtiomL/f5-azure-ha')
 	objArgParser.add_argument('-a', help ='test Azure RM authentication and exit', action = 'store_true', dest = 'auth')
+	objArgParser.add_argument('-b', help ='Azure LB name', dest = 'lbaz')
 	objArgParser.add_argument('-c', help ='config file location', dest = 'cfile')
 	objArgParser.add_argument('-f', help ='force failover', action = 'store_true', dest = 'fail')
 	objArgParser.add_argument('-l', help ='set log level (default: 0)', choices = [0, 1, 2, 3], type = int, dest = 'log')
@@ -355,6 +358,10 @@ def main():
 		sys.exit(funUpdUDR())
 
 
+	# LBAZ name
+	if objArgs.lbaz:
+		objAREA.strLBName = '/' + objArgs.lbaz
+
 	if objArgs.state or objArgs.fail:
 		# Check current HA state
 		funRunAuth()
@@ -364,6 +371,7 @@ def main():
 
 		# Force failover
 		sys.exit(funFailover())
+
 
 	# eMonitor mode
 	try:
