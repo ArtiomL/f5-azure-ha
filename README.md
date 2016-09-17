@@ -168,8 +168,8 @@ If run interactively, **_stdout_** is used for log messages (`intLogLevel = 1`),
 ## --help
 ```
 ./azure_ha.py --help
-usage: azure_ha.py [-h] [-a] [-c CFILE] [-f] [-l {0,1,2,3}] [-r UDR [UDR ...]]
-                   [-s] [-u] [-v]
+usage: azure_ha.py [-h] [-a] [-b LBAZ] [-c CFILE] [-f] [-l {0,1,2,3}]
+                   [-r UDR [UDR ...]] [-s] [-u] [-v]
                    [IP] [PORT]
 
 F5 High Availability in Microsoft Azure
@@ -181,6 +181,7 @@ positional arguments:
 optional arguments:
   -h, --help        show this help message and exit
   -a                test Azure RM authentication and exit
+  -b LBAZ           Azure LB name (first LB is used if omitted)
   -c CFILE          config file location
   -f                force failover
   -l {0,1,2,3}      set log level (default: 0)
