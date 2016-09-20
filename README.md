@@ -45,7 +45,7 @@ The minimum supported TMOS version is **12.1** (the first version to include the
 
 <br>
 ## Topology
-<img align="center" src="img/top.png">
+<img src="img/top.png">
 
 <br>
 ## Installation
