@@ -1,4 +1,4 @@
-# <img align="center" src="azure.png" height="70">&nbsp;&nbsp;F5 High Availability in Microsoft Azure
+# <img align="center" src="img/azure.png" height="70">&nbsp;&nbsp;F5 High Availability in Microsoft Azure
 [![Releases](https://img.shields.io/github/release/ArtiomL/f5-azure-ha.svg)](https://github.com/ArtiomL/f5-azure-ha/releases)
 [![Commits](https://img.shields.io/github/commits-since/ArtiomL/f5-azure-ha/v0.9.8.svg?label=commits%20since)](https://github.com/ArtiomL/f5-azure-ha/commits/master)
 [![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)](https://github.com/ArtiomL/f5-azure-ha/graphs/code-frequency)
