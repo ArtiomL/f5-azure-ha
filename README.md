@@ -49,7 +49,7 @@ Supported (and recommended) design:
 <p align="center"><img src="img/topo.png"></p>
 <br>
 Notes:
-- Both external and internal Azure Load Balancers are supported (`-b`)
+- Both **Public** (external) and **Internal** Azure Load Balancers are supported (`-b` to set LB name)
 - Use [this](https://github.com/ArtiomL/f5networks/blob/master/azure/lbaz_mpips.ps1) script to setup Load Balancing Rules with Multiple Public IPs
 
 <br>
