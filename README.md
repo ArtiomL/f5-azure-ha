@@ -47,6 +47,9 @@ The minimum supported TMOS version is **12.1** (the first version to include the
 ## Topology
 Supported (and recommended) design:
 <p align="center"><img src="img/topo.png"></p>
+Notes:
+- Both external and internal Azure Load Balancers are supported (`-b`)
+- Use [this](https://github.com/ArtiomL/f5networks/blob/master/azure/lbaz_mpips.ps1) script to setup Load Balancing Rules with Multiple Public IPs
 
 <br>
 ## Installation
