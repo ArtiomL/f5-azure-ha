@@ -50,7 +50,8 @@ Supported (and recommended) design:
 <br>
 Notes:
 - Both **Public** (external) and **Internal** Azure Load Balancers are supported (`-b` to set LB name)
-- Use [this](https://github.com/ArtiomL/f5networks/blob/master/azure/lbaz_mpips.ps1) script if you need help setting up load balancing rules with multiple public IPs
+- Updating (multiple) Route Tables only (no LBAZ) is also supported (`-u -r UDR [UDR ...]`)
+- Use [this](https://github.com/ArtiomL/f5networks/blob/master/azure/lbaz_mpips.ps1) script if you need help setting up LB rules with multiple public IPs
 
 <br>
 ## Installation
