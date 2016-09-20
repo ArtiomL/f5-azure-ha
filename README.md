@@ -178,7 +178,7 @@ Instead, use [SOL14397](https://support.f5.com/kb/en-us/solutions/public/14000/3
 Set up simple monitors between the two BIG-IPs, and execute [azure_ha.py](azure_ha.py) with arguments relevant to your environment whenever the local monitor reports peer status down:
 
 ```shell
-# /config/user_alert.conf example:
+# /config/user_alert.conf example
 alert alrt_AZURE_HA "Pool /Common/pool_HA member /Common/node_HA_PEER:80 monitor status down" {
     exec command ="/shared/tmp/scripts/azure/azure_ha.py -l2 -c azure_ha.json -f -b lbazEXTERNAL -r udrWEBSRVs"
 }
