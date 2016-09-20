@@ -170,6 +170,7 @@ class clsAREA(object):
 ### [azure_ha.py](azure_ha.py)
 
 This is the actual HA / failover logic.
+The file can be used as an [external monitor](https://devcentral.f5.com/articles/ltm-external-monitors-the-basics), but this is not recommended, since at the moment, the Azure RM takes up to [3 minutes](#7) to successfully complete API transactions.
 
 <br>
 ## Logging
