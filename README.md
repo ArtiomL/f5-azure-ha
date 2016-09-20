@@ -50,7 +50,7 @@ Supported (and recommended) design:
 <br>
 Notes:
 - Both **Public** (external) and **Internal** Azure Load Balancers are supported (`-b` to set LB name)
-- Updating (multiple) Route Tables (in addition to LBAZ) during the same failover event is supported (`-r UDR [UDR ...]`)
+- Updating (multiple) Route Tables (**in addition** to LBAZ) during a single failover event is supported (`-r`)
 - Updating (multiple) Route Tables only (no LBAZ) is also supported (`-u` for UDR-only failover)
 - Use [this](https://github.com/ArtiomL/f5networks/blob/master/azure/lbaz_mpips.ps1) script if you need help setting up LB rules with multiple public IPs
 
