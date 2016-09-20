@@ -173,7 +173,7 @@ This is the actual HA / failover logic.
 
 The file can be used as an [external monitor](https://devcentral.f5.com/articles/ltm-external-monitors-the-basics), but this is not recommended, since currently the Azure RM API takes up to [3 minutes](https://github.com/ArtiomL/f5-azure-ha/issues/7) to successfully complete PUT transactions.
 
-Instead, use [SOL14397](https://support.f5.com/kb/en-us/solutions/public/14000/300/sol14397.html) to run this program based on a `monitor status down` mcpd syslog message. These messages should not be ([ throttled](https://support.f5.com/kb/en-us/solutions/public/11000/900/sol11900.html)).
+Instead, use [SOL14397](https://support.f5.com/kb/en-us/solutions/public/14000/300/sol14397.html) to run this program based on a `monitor status down` mcpd syslog message. These messages should not be [ throttled](https://support.f5.com/kb/en-us/solutions/public/11000/900/sol11900.html).
 
 Set up simple monitors between the two BIG-IPs, and execute [azure_ha.py](azure_ha.py) with arguments relevant to your environment whenever the local monitor reports peer status down.
 
