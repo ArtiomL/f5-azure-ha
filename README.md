@@ -14,8 +14,6 @@
  - [cfg_sync.sh](#cfg_syncsh)
  - [azure_ad_app.ps1](#azure_ad_appps1)
  - [azure_ha.py](#azure_hapy)
-  - [Monitors and Nodes](#monitors-and-nodes)
-  - [/config/user_alert.conf](#configuser_alertconf)
 - [Logging](#logging)
 - [Help](#--help)
 - [License](LICENSE)
