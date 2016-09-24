@@ -5,6 +5,12 @@
 [![Issues](https://img.shields.io/github/issues/ArtiomL/f5-azure-ha.svg)](https://github.com/ArtiomL/sublime-f5-irules/issues)
 ![TMOS](https://img.shields.io/badge/tmos-12.1-ff0000.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+
+<br>
+## Table of Contents
+- [Description](#description)
+- [Topology](#topology)
+
 <br>
 ## Description
 
