@@ -15,7 +15,7 @@
  - [azure_ad_app.ps1](#azure_ad_appps1)
  - [azure_ha.py](#azure_hapy)
 - [Logging](#logging)
-- [--help](#--help)
+- [Help](#--help)
 - [License](LICENSE)
 
 <br>
