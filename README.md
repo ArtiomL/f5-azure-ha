@@ -226,7 +226,7 @@ ltm node node_vmF5B {
 #### /config/user_alert.conf
 ```shell
 alert alrt_AZURE_HA "Node /Common/node_vmF5B address 10.1.1.246 monitor status down" {
-	exec command = "/shared/tmp/scripts/azure/azure_ha.py -l2 -c azure_ha.json -f -b lbazEXTERNAL -r udrWEBSRVs"
+	exec command = "/shared/tmp/scripts/azure/azure_ha.py -l2 -f -b lbazEXTERNAL -r udrWEBSRVs"
 }
 ```
 
