@@ -175,10 +175,43 @@ The file can be used as an [external monitor](https://devcentral.f5.com/articles
 
 Instead, use [SOL14397](https://support.f5.com/kb/en-us/solutions/public/14000/300/sol14397.html) to run this program based on a `monitor status down` mcpd syslog message. These messages should not be [ throttled](https://support.f5.com/kb/en-us/solutions/public/11000/900/sol11900.html).
 
-Set up simple monitors between the two BIG-IPs, and execute [azure_ha.py](azure_ha.py) with arguments relevant to your environment whenever the local monitor reports peer status down. For example:
+Set up simple node monitors between the two BIG-IPs, and execute [azure_ha.py](azure_ha.py) with arguments relevant to your environment whenever the local monitor reports peer status down. For example:
 
+Monitors / nodes:
 ```shell
-# /config/user_alert.conf
+ltm monitor tcp-half-open mon_HA_22 {
+	defaults-from tcp_half_open
+	destination *:ssh
+	interval 3
+	time-until-up 0
+	timeout 10
+}
+
+ltm monitor tcp-half-open mon_HA_443 {
+	defaults-from tcp_half_open
+	destination *:https
+	interval 3
+	time-until-up 0
+	timeout 10
+}
+
+ltm node node_vmF5A {
+	address 10.1.1.245
+	monitor min 1 of { icmp mon_HA_22 mon_HA_443 }
+	session monitor-enabled
+	state up
+}
+
+ltm node node_vmF5B {
+	address 10.1.1.246
+	monitor min 1 of { icmp mon_HA_22 mon_HA_443 }
+	session monitor-enabled
+	state up
+}
+```
+
+/config/user_alert.conf
+```shell
 alert alrt_AZURE_HA "Pool /Common/pool_HA member /Common/node_HA_PEER:80 monitor status down" {
     exec command ="/shared/tmp/scripts/azure/azure_ha.py -l2 -c azure_ha.json -f -b lbazEXTERNAL -r udrWEBSRVs"
 }
