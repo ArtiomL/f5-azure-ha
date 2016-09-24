@@ -11,7 +11,7 @@
 - [Description](#description)
 - [Topology](#topology)
 - [Installation](#installation)
-  *[cfg_sync.sh](#cfg_syncsh)
+ - [cfg_sync.sh](#cfg_syncsh)
 
 <br>
 ## Description
