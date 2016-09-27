@@ -61,7 +61,7 @@ The minimum supported TMOS version is **12.1** (the first version to include the
 Supported (and recommended) design:
 <p align="center"><img src="img/topo.png">
 <br>
----
+## 
 <img src="img/topfw.png"></p>
 <br>
 Notes:
