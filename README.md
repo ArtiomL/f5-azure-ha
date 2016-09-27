@@ -59,7 +59,7 @@ The minimum supported TMOS version is **12.1** (the first version to include the
 <br>
 ## Topology
 Supported (and recommended) design:
-<p align="center"><img src="img/top1.png"><br><br><img src="img/top2.png"></p>
+<p align="center"><img src="img/top1.png">&nbsp;&nbsp;&nbsp;<img src="img/top2.png"></p>
 <br>
 Notes:
 - Both **Public** (external) and **Internal** Azure Load Balancers are supported (`-b` to set LB name)
