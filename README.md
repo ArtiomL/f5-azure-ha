@@ -62,6 +62,7 @@ Supported (and recommended) designs:
 <p align="center"><img src="img/top1.png"></p>
 <br>
 * * *
+<br>
 <p align="center"><img src="img/top2.png"></p>
 <br>
 Notes:
