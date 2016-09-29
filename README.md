@@ -60,7 +60,7 @@ The minimum supported TMOS version is **12.1** (the first version to include the
 ## Topology
 Supported (and recommended) designs:
 <p align="center"><img src="img/top1.png"></p>
-<br>
+<br><br>
 * * *
 <br>
 <p align="center"><img src="img/top2.png"></p>
