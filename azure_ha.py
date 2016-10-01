@@ -2,7 +2,7 @@
 # f5-azure-ha - F5 High Availability in Microsoft Azure
 # https://github.com/ArtiomL/f5-azure-ha
 # Artiom Lichtenstein
-# v1.0.1, 01/10/2016
+# v1.0.2, 01/10/2016
 
 import argparse
 import atexit
@@ -18,7 +18,7 @@ import time
 
 __author__ = 'Artiom Lichtenstein'
 __license__ = 'MIT'
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 # PID file
 strPFile = ''
@@ -211,7 +211,7 @@ def funCurState(lstIPs):
 		objHResp = objAREA.objHS.get(objAREA.funURI(strBEIPURI))
 		# Extract private IP address
 		strARMIP = json.loads(objHResp.content)['properties']['privateIPAddress']
-		funLog(2, 'Current private IP in Azure RM: %s' % strARMIP)
+		funLog(2, 'Current private IP in Azure RM (backend pool): %s' % strARMIP)
 		if strARMIP == lstIPs[0]:
 			# This machine is already Active
 			funLog(1, 'Current state: Active')
