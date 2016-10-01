@@ -384,12 +384,11 @@ def main():
 	if objArgs.state or objArgs.fail:
 		# Check current HA state
 		funRunAuth()
-		funCurState(funGetIPs())
-		if not objArgs.fail:
-			sys.exit()
+		if funCurState(funGetIPs()) == 'Standby' and objArgs.fail:
+			# Force failover
+			sys.exit(funFailover())
 
-		# Force failover
-		sys.exit(funFailover())
+		sys.exit()
 
 
 	# eMonitor mode
