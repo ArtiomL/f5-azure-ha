@@ -3,7 +3,6 @@
 # Artiom Lichtenstein
 # v1.3, 17/09/2016
 
-
 # Login to Azure RM
 Login-AzureRmAccount
 
