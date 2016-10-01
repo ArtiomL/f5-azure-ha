@@ -2,7 +2,7 @@
 # f5-azure-ha - F5 High Availability in Microsoft Azure
 # https://github.com/ArtiomL/f5-azure-ha
 # Artiom Lichtenstein
-# v1.0.0, 17/09/2016
+# v1.0.1, 01/10/2016
 
 import argparse
 import atexit
@@ -18,7 +18,7 @@ import time
 
 __author__ = 'Artiom Lichtenstein'
 __license__ = 'MIT'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 # PID file
 strPFile = ''
@@ -26,7 +26,7 @@ strPFile = ''
 # Log level to /var/log/ltm (or stdout)
 intLogLevel = 0
 strLogMethod = 'log'
-strLogID = '[-v%s-160917-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
+strLogID = '[-v%s-161001-] %s - ' % (__version__, os.path.basename(sys.argv[0]))
 
 # Logger command
 strLogger = 'logger -p local0.'
@@ -175,7 +175,12 @@ def funGetIPs():
 	if len(lstIPs) != 2:
 		return ['::1', '::1']
 
-	if funLocIP(lstIPs[0]) == lstIPs[1]:
+	strLocIP = funLocIP(lstIPs[0])
+	if strLocIP not in lstIPs:
+		funLog(1, 'Local machine is not part of the Azure HA pair', 'err')
+		return ['::1', '::1']
+
+	if strLocIP == lstIPs[1]:
 		lstIPs.reverse()
 	# Return two strings, local IP first, then peer IP
 	funLog(1, 'Local IP: %s, Peer IP: %s' % (lstIPs[0], lstIPs[1]))
