@@ -157,7 +157,7 @@ def funLocIP(strRemIP):
 	# Get local private IP
 	objUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	# The .connect method doesn't generate any real network traffic for UDP (socket.SOCK_DGRAM)
-	objUDP.connect((strRemIP, 0))
+	objUDP.connect((strRemIP, 1))
 	return objUDP.getsockname()[0]
 
 
@@ -173,12 +173,12 @@ def funGetIPs():
 		except Exception as e:
 			funLog(2, repr(e), 'err')
 	if len(lstIPs) != 2:
-		return ['::1', '::1']
+		return ['undefined']
 
 	strLocIP = funLocIP(lstIPs[0])
 	if strLocIP not in lstIPs:
 		funLog(1, 'Local machine is not part of the Azure HA pair', 'err')
-		return ['::1', '::1']
+		return [strLocIP]
 
 	if strLocIP == lstIPs[1]:
 		lstIPs.reverse()
@@ -191,6 +191,10 @@ def funCurState(lstIPs):
 	# Get current ARM state for the local machine (lstIPs[0] = local IP, lstIPs[1] = peer IP)
 	global objAREA
 	funLog(2, 'Current local private IP: %s, Resource Group: %s' % (lstIPs[0], objAREA.strRGName))
+	if len(lstIPs) != 2:
+		funLog(1, 'Current state: Unknown', 'warning')
+		return 'Unknown'
+
 	# Construct loadBalancers URL
 	strLBURL = '%ssubscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/%s%s' % objAREA.funAbsURL('loadBalancers' + objAREA.strLBName)
 	try:
