@@ -173,17 +173,18 @@ def funGetIPs():
 		except Exception as e:
 			funLog(2, repr(e), 'err')
 	if len(lstIPs) != 2:
+		funLog(2, 'Failed to get both F5 NICs.', 'err')
 		return ['undefined']
 
 	strLocIP = funLocIP(lstIPs[0])
 	if strLocIP not in lstIPs:
-		funLog(1, 'Local machine is not part of the Azure HA pair', 'err')
+		funLog(2, 'Local machine is not part of the Azure HA pair.', 'err')
 		return [strLocIP]
 
 	if strLocIP == lstIPs[1]:
 		lstIPs.reverse()
 	# Return two strings, local IP first, then peer IP
-	funLog(1, 'Local IP: %s, Peer IP: %s' % (lstIPs[0], lstIPs[1]))
+	funLog(2, 'Local IP: %s, Peer IP: %s' % (lstIPs[0], lstIPs[1]))
 	return lstIPs
 
 
@@ -192,7 +193,7 @@ def funCurState(lstIPs):
 	global objAREA
 	funLog(2, 'Current local private IP: %s, Resource Group: %s' % (lstIPs[0], objAREA.strRGName))
 	if len(lstIPs) != 2:
-		funLog(1, 'Current state: Unknown', 'warning')
+		funLog(1, 'Current state: Unknown', 'err')
 		return 'Unknown'
 
 	# Construct loadBalancers URL
@@ -254,6 +255,10 @@ def funUpdUDR():
 	# UDR mode failover (or route table update in LBAZ mode)
 	lstIPs = funGetIPs()
 	# lstIPs[0] = local IP, lstIPs[1] = peer IP
+	if len(lstIPs) != 2:
+		funLog(1, 'UDR updates halted.', 'err')
+		return 3
+
 	intExCode = 0
 	for i in objAREA.lstUDRs:
 		# Construct UDR URL
