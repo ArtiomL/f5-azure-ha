@@ -2,7 +2,7 @@
 [![Releases](https://img.shields.io/github/release/ArtiomL/f5-azure-ha.svg)](https://github.com/ArtiomL/f5-azure-ha/releases)
 [![Commits](https://img.shields.io/github/commits-since/ArtiomL/f5-azure-ha/v1.0.2.svg?label=commits%20since)](https://github.com/ArtiomL/f5-azure-ha/commits/master)
 [![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)](https://github.com/ArtiomL/f5-azure-ha/graphs/code-frequency)
-[![Issues](https://img.shields.io/github/issues/ArtiomL/f5-azure-ha.svg)](https://github.com/ArtiomL/sublime-f5-irules/issues)
+[![Issues](https://img.shields.io/github/issues/ArtiomL/f5-azure-ha.svg)](https://github.com/ArtiomL/f5-azure-ha/issues)
 ![TMOS](https://img.shields.io/badge/tmos-12.1-ff0000.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
