@@ -259,7 +259,9 @@ alert alrt_AZURE_HA "Node /Common/node_vmF5A address 10.1.1.245 monitor status d
 &nbsp;&nbsp;
 
 ## Logging
-All logging is **disabled** by default. Please use the `-l {0,1,2,3}` argument to set the required verbosity.<br>
+All logging is **disabled** by default. Please use the `-l {0,1,2,3}` argument to set the required verbosity.
+&nbsp;&nbsp;
+
 Alternatively, this is controlled by the global `intLogLevel` variable:
 ```python
 # Log level to /var/log/ltm (or stdout)
