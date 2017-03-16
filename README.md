@@ -6,7 +6,8 @@
 ![TMOS](https://img.shields.io/badge/tmos-12.1-ff0000.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
-<br>
+&nbsp;&nbsp;
+
 ## Table of Contents
 - [Description](#description)
 - [Topology](#topology)
@@ -18,7 +19,8 @@
 - [Help](#--help)
 - [License](LICENSE)
 
-<br>
+&nbsp;&nbsp;
+
 ## Description
 
 In a regular F5 Device Service Clustering working in High Availability mode, cluster members use Gratuitous ARP or MAC Masquerade during normal operation and when cluster failover occurs.
@@ -34,7 +36,8 @@ However, this isn't currently implemented by F5:
 
 > :warning: 01071ac2:3: Device-group (/Common/dg_HA): network-failover property must be disabled in VE-1NIC.
 
-<br>
+&nbsp;&nbsp;
+
 The code in this repository is the proposed API-based failover solution for BIG-IP HA in Microsoft Azure.
 
 Updating both the Azure Load Balancer (LBAZ) and Route Tables (UDR) is supported.
@@ -56,15 +59,18 @@ import time
 
 The minimum supported TMOS version is **12.1** (the first version to include the Python `requests` HTTP library).
 
-<br>
+&nbsp;&nbsp;
+
 ## Topology
 Supported (and recommended) designs:
 <p align="center"><img src="img/top1.png"></p>
-<br>
-* * *
-<br>
+&nbsp;&nbsp;
+
+&nbsp;&nbsp;
+
 <p align="center"><img src="img/top2.png"></p>
-<br>
+&nbsp;&nbsp;
+
 Notes:
 - Both **Public** (external) and **Internal** Azure Load Balancers are supported (`-b` to set LB name)
 - Using Route Tables (to route outbound traffic via BIG-IPs) is **optional**
@@ -72,7 +78,8 @@ Notes:
 - Updating (multiple) Route Tables _only_ (**no** LBAZ) is also supported (`-u` for UDR-only failover)
 - Use [this](https://github.com/ArtiomL/f5networks/blob/master/azure/lbaz_mpips.ps1) script if you need help setting up LB rules with multiple public IPs
 
-<br>
+&nbsp;&nbsp;
+
 ## Installation
 ### [cfg_sync.sh](cfg_sync.sh)
 First, make sure you follow these steps to enable config sync ([Manual Chapter](https://support.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/bigip-ve-setup-msft-azure-12-0-0/3.html)):
@@ -90,7 +97,7 @@ tmsh show /sys version
 tmsh modify /cm device <bigipX> configsync-ip <self-ip>
 
 # Establish device trust: On one BIG-IP VE, enter the private IP address of the other BIG-IP VE, along with the username and password
-tmsh modify /cm trust-domain add-device { device-ip <peer-ip> device-name <bigipY> username <username> password <password> }
+tmsh modify /cm trust-domain root ca-devices add { <peer-ip> } name <bigipX> username <username> password <password>
 
 # Create a sync-failover device group with network failover disabled
 tmsh create /cm device-group <device-group> devices add { <all-device-names-separated-by-space> } type sync-failover auto-sync enabled network-failover disabled
@@ -99,7 +106,8 @@ tmsh create /cm device-group <device-group> devices add { <all-device-names-sepa
 tmsh run /cm config-sync to-group <device-group>
 ```
 
-<br>
+&nbsp;&nbsp;
+
 ### [azure_ad_app.ps1](azure_ad_app.ps1)
 
 To be able to make API calls automatically, the two HA members must be provided with Azure Active Directory credentials ([azure_ha.json](azure_ha.json)) using the Azure Role-Based Access Control (RBAC).
@@ -159,7 +167,8 @@ Set-AzureRmResourceGroup -Name $rgName -Tag $rgTags
 @{ "subID" = $subsID; "tenantID" = $tenantID; "appID" = $appID; "pass" = $adaPass; "rgName" = $rgName; "nicF5A" = $nicF5A; "nicF5B" = $nicF5B } | ConvertTo-Json
 ```
 
-<br>
+&nbsp;&nbsp;
+
 This will result in a [`JSON`](azure_ha.json) file, similar to the following:
 ```json
 {
@@ -173,7 +182,8 @@ This will result in a [`JSON`](azure_ha.json) file, similar to the following:
 }
 ```
 
-<br>
+&nbsp;&nbsp;
+
 This file should be placed at the following location on both HA BIG-IPs: `/shared/tmp/scripts/azure/azure_ha.json`
 Alternatively, this path is controlled by the `-c` command line argument or the `strCFile` attribute of the `clsAREA` class (in [azure_ha.py](azure_ha.py)):
 ```python
@@ -183,7 +193,8 @@ class clsAREA(object):
 		self.strCFile = '/shared/tmp/scripts/azure/azure_ha.json'
 ```
 
-<br>
+&nbsp;&nbsp;
+
 ### [azure_ha.py](azure_ha.py)
 
 This is the actual HA / failover logic.
@@ -245,7 +256,8 @@ alert alrt_AZURE_HA "Node /Common/node_vmF5A address 10.1.1.245 monitor status d
 }
 ```
 
-<br>
+&nbsp;&nbsp;
+
 ## Logging
 All logging is **disabled** by default. Please use the `-l {0,1,2,3}` argument to set the required verbosity.<br>
 Alternatively, this is controlled by the global `intLogLevel` variable:
@@ -255,7 +267,8 @@ intLogLevel = 0
 ```
 If run interactively, **_stdout_** is used for log messages (`intLogLevel = 1`), otherwise `/var/log/ltm` will be used.
 
-<br>
+&nbsp;&nbsp;
+
 ## --help
 ```
 ./azure_ha.py --help
