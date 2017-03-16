@@ -5,6 +5,7 @@
 [![Issues](https://img.shields.io/github/issues/ArtiomL/f5-azure-ha.svg)](https://github.com/ArtiomL/f5-azure-ha/issues)
 ![TMOS](https://img.shields.io/badge/tmos-13.0-ff0000.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+[![Slack Status](https://f5cloudsolutions.herokuapp.com/badge.svg)](https://f5cloudsolutions.herokuapp.com)
 
 &nbsp;&nbsp;
 
