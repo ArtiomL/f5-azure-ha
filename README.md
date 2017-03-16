@@ -90,7 +90,7 @@ tmsh show /sys version
 tmsh modify /cm device <bigipX> configsync-ip <self-ip>
 
 # Establish device trust: On one BIG-IP VE, enter the private IP address of the other BIG-IP VE, along with the username and password
-tmsh modify /cm trust-domain root ca-devices add { <peer-ip> } name <bigipX> username <username> password <password>
+tmsh modify /cm trust-domain add-device { device-ip <peer-ip> device-name <bigipY> username <username> password <password> }
 
 # Create a sync-failover device group with network failover disabled
 tmsh create /cm device-group <device-group> devices add { <all-device-names-separated-by-space> } type sync-failover auto-sync enabled network-failover disabled
