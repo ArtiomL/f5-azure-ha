@@ -83,7 +83,7 @@ Notes:
 
 ## Installation
 ### [cfg_sync.sh](cfg_sync.sh)
-First, make sure you follow these steps to enable config sync ([Manual Chapter](https://support.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/bigip-ve-setup-msft-azure-12-0-0/3.html)):
+First, make sure you follow these steps to enable config sync ([Manual Chapter for v12.1](https://support.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/bigip-ve-setup-msft-azure-12-0-0/3.html)):
 ```shell
 # Disable functionality that enforces single NIC setup
 tmsh modify /sys db provision.1nicautoconfig value disable
