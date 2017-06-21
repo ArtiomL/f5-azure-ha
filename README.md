@@ -39,6 +39,10 @@ However, this isn't currently implemented by F5:
 
 &nbsp;&nbsp;
 
+**UPDATE**: [Experimental](https://github.com/F5Networks/f5-azure-arm-templates#introduction) ARM templates for Azure HA are now available [here](https://github.com/F5Networks/f5-azure-arm-templates/tree/master/experimental/ha-avset).
+
+&nbsp;&nbsp;
+
 The code in this repository is the proposed API-based failover solution for BIG-IP HA in Microsoft Azure.
 
 Updating both the Azure Load Balancer (LBAZ) and Route Tables (UDR) is supported.
